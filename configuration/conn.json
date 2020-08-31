@@ -1,0 +1,19 @@
+
+{
+    "development": {
+        "PORT":3500,
+       "MONGODB_URI":"mongodb+srv://mits:mits01@cluster0.n3kne.mongodb.net/pitcher?retryWrites=true&w=majority",
+        "JWT_SECRET":"SECRET@123",
+        "JWT_EXP":"15m",
+        "GOOGLE_CLIENT_ID":"265927920845-c9f13fuj3cpb6fugbbrj75nv4eaiulkl.apps.googleusercontent.com",
+        "GOOGLE_CLIENT_SECRET":"tbb298VpqxFwsvXAHIl2Rx2x"
+    },
+    "production":{
+        "PORT":100,
+        "MONGODB_URI":"mongodb://xxxxx/databasename",
+        "JWT_SECRET":"SECRET@123",
+        "JWT_EXP":"15m",
+        "GOOGLE_CLIENT_ID":"265927920845-c9f13fuj3cpb6fugbbrj75nv4eaiulkl.apps.googleusercontent.com",
+        "GOOGLE_CLIENT_SECRET":"tbb298VpqxFwsvXAHIl2Rx2x"
+    }
+}
