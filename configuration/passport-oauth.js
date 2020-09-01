@@ -1,6 +1,8 @@
 const passport=require('passport')
 const mongoose=require('mongoose')
-const Basic=mongoose.model('basic')
+const User=mongoose.model('user')
+const jhelper = require('../configuration/jhelper');
+//const { authenticate } = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 passport.use(new GoogleStrategy({
@@ -15,52 +17,45 @@ passport.use(new GoogleStrategy({
     const newUser={
           name:profile.displayName,
           email:profile.emails[0].value,
-          password:profile.name[0],
-          googleid:profile.id
+          password:profile.name.givenName,
+          googleid:profile.id,
+          verified:profile.emails[0].verified
       }
-    Basic.findOne({ googleid: profile.id },(err,basic)=> {
+    User.findOne({ googleid: profile.id },(err,user)=> {
         if(err)
         return err
-        else if(basic)
-        return cb(null,basic)
+        else if(user)
+        return cb(null,user)
         else{
-        basic=Basic.create(newUser)
-        return cb(null,basic)
+        user=User.create(newUser)
+        return cb(null,user)
         }
     });
     console.log("data from db")
     console.log(newUser)
-    /*const newUser = {
-       googleId: profile.id,
-        displayName: profile.displayName,
-        firstName: profile.name.givenName,
-        lastName: profile.name.familyName,
-        image: profile.photos[0].value,
-        name:profile.displayName,
-        email:profile.emails[0].value,
-        googleId:profile.id
-      }
-
-      try {
-        let basic = await Basic.findOne({ googleId: profile.id })
-
-        if (basic) {
-          cb(null, basic)
-        } else {
-          basic = await Basic.create(newUser)
-          cb(null, basic)
-        }
-      } catch (err) {
-        console.error(err)
-      }
-      console.log("data from db")
-    console.log(newUser)*/
   }
 ));
-passport.serializeUser((basic,cb) => {
-    cb(null, basic.id)
+passport.serializeUser(function(user,cb){
+    cb(null,user.id)
   }),
-  passport.deserializeUser((id, cb) => {
-    Basic.findById(id, 
-        (err, user) => cb(err, user))
+ passport.deserializeUser(function(id, cb){
+    User.findById(id, 
+        (err,user) => cb(err,user))
   })
+
+// Middleware to check if the user is authenticated
+module.exports.isAuth=(req, res, next)=>{
+  var googleid = req.body.googleid;
+  console.log("Trying to AUTH request",googleid);
+  User.find({ accessToken: googleid },(err,user)=>{
+      if(user)
+        return next();
+       else
+        {
+          if((jhelper.verifyJwtToken))
+          return next();
+        else
+          return res.sendStatus(401);
+      }
+  })
+ }

@@ -5,5 +5,5 @@ mongoose.connect(process.env.MONGODB_URI,{ useUnifiedTopology:true ,useNewUrlPar
     else{console.log('error in connection:'+JSON.stringify (err,undefined,2))}
 });
 
-require('./basic');
+require('./user');
 require('./pitcher');

@@ -4,18 +4,18 @@ const mongoose=require('mongoose')
 const passport = require('passport')
 const _ =require('lodash');
 const { send } = require('process');
-const Basic=mongoose.model('basic')
+const User=mongoose.model('user')
 const Pitcher=mongoose.model('pitcher')
 
 
 //endpoint logic to post the data of user
 module.exports.postsignin=(req,res,next)=>{
     console.log("inside post sign-in method")
-    var basic=new Basic();
-    basic.name=req.body.name;
-    basic.email=req.body.email;
-    basic.password=req.body.password;
-    basic.save((err,doc)=>{
+    var user=new User();
+    user.name=req.body.name;
+    user.email=req.body.email;
+    user.password=req.body.password;
+    user.save((err,doc)=>{
     if(!err)
     res.send(doc)
     else{
@@ -30,83 +30,72 @@ module.exports.postsignin=(req,res,next)=>{
 //endpoint logic to get the data of all users
 module.exports.getsignin=(req,res,next)=>{
     console.log("inside getsignin method")
-    Basic.find((err,basics)=>{
+    User.find((err,users)=>{
         if(err)
         res.send(err)
         else
-        res.json(basics)
+        res.json(users)
     })
 }
 
 //endpoint logic to get the particular user
 module.exports.getUser=(req,res)=>{
     console.log("inside getUser method")
-    Basic.findById(req.params.id,(err,basics)=>{
+    User.findById(req.params.id,(err,users)=>{
      if(err)
      res.send(err)
      else
-     res.json(basics)
+     res.json(users)
     })
 }
 
 //endpoint logic to delete particular user
-/*module.exports.delUser=(req,res,next)=>{
+module.exports.delUser=(req,res,next)=>{
     console.log("inside delete user method")
-    Basic.findByIdAndDelete(req.params.id,(err,basics)=>{
+    User.findByIdAndDelete(req.params.id,(err,users)=>{
         if(!err)
-        res.json(basics)
+        res.json(users)
         else
-        console.log('Error in basics delete: '+JSON.stringify(err,undefined,2));
+        console.log('Error in users delete: '+JSON.stringify(err,undefined,2));
     })
 }
 
 //endpoint logic to update particular user
 module.exports.putUser=(req,res)=>{
     console.log("inside putuser method")
-   var basic={
+   var user={
     name : req.body.name,
     mobile : req.body.mobile,
     address : req.body.address
     }
-    Basic.findByIdAndUpdate(req.params.id,{$set:basic},{new:true},(err,doc)=>{
+    User.findByIdAndUpdate(req.params.id,{$set:user},{new:true},(err,doc)=>{
      if(!err)
      res.send(doc)
      else
      console.log("error in update")
     })
-    /*var basic=new Basic();
-    basic.name=req.body.name;
-    basic.mobile=req.body.mobile;
-    basic.address=req.body.address;
-    Basic.findByIdAndUpdate(req.params.id,{new:true},(err,doc)=>{
-        if(!err)
-        res.send(doc)
-        else
-        console.log("error in update")
-       })
-}*/
+}
 module.exports.authenticate = (req,res,next)=>{
-    passport.authenticate('local',(err,basic,info)=>{
+    passport.authenticate('local',(err,user,info)=>{
         if(err)
         return res.status(400).json(err)
-        else if(basic)
-        return res.status(200).json({"token":basic.generatedJwt()})
+        else if(user)
+        return res.status(200).json({"token":user.generatedJwt()})
         else 
         return res.status(404).json(info);
     })(req,res);
 }
 module.exports.userprofile =(req,res,next)=>{
-    Basic.findOne({ _id: req._id},
-    (err,basic)=>{
-        if(!basic)
+    User.findOne({ _id: req._id},
+    (err,user)=>{
+        if(!user)
         {
         return res.status(404).json({status: false,message:'user details not found'});
         alert(err)
         }
         else{
-      return res.status(200).json({status: true,basic:_.pick(basic,['name','email'])})
+      return res.status(200).json({status: true,user:_.pick(user,['name','email'])})
        //return res.status(200).json({status: true,message:'user details are these'});
-       //return res.status(200).json(basic)
        console.log(err)
         }
     });

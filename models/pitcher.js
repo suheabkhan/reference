@@ -44,6 +44,14 @@ const pitchSchema = new mongoose.Schema({
     Runway: {
         type:String
     },
+    Fund_raised:{
+        Amount_raised:{
+            type:String
+        },
+        Date_of_started_raising_funds:{
+            type:Date
+        }
+    },
     Sections:[sectionSchema],
     Team_images:[
         {
@@ -96,17 +104,3 @@ mongoose.model('pitcher',pitchSchema);
 //     ]
 // ]*/
 
-/*function isAuth(req, res, next) {
-    var uid = req.body.uid;
-    console.log("Trying to AUTH request with accesstoken:", uid);
-    User.findOne({ accesstoken: uid }).then((user) => {
-        if (user) {
-            console.log("User access token is valid, next");
-            return next();
-        } else {
-            console.log("No user found with this token");
-            return res.sendStatus(401);
-        }
-    });
-}
- */

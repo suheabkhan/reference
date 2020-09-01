@@ -8,14 +8,14 @@ const router=express.Router()
 //just seperating functionality of route to avoid clumsyness
 const gotoContol = require('../control/mycontrol');
 const jhelper = require('../configuration/jhelper');
+const ghelper=require('../configuration/passport-oauth');
 
 //routers
 router.post('/signin',gotoContol.postsignin)
 router.get('/signin',gotoContol.getsignin)
 router.get('/signin/:id',gotoContol.getUser)
-
-//router.delete('/signin/:id',gotoContol.delUser)
-//router.put('/signin/:id',gotoContol.putUser);
+router.delete('/signin/:id',gotoContol.delUser)
+router.put('/signin/:id',gotoContol.putUser);
 
 router.post('/authenticate',gotoContol.authenticate);
 router.get('/userprofile',jhelper.verifyJwtToken,gotoContol.userprofile);
@@ -30,11 +30,13 @@ passport.authenticate('google',{failureRedirect:'/auth/signin'}),
 
 //routes for pitcher schema
 
-router.post('/addpitch',((jhelper.verifyJwtToken)|| (jhelper.ensureAuth)),gotoContol.addpitch);
-router.get('/getallpitches',((jhelper.verifyJwtToken)|| (jhelper.ensureAuth)),gotoContol.getallpitches);
-router.get('/getpitchbyid/:id',((jhelper.verifyJwtToken)|| (jhelper.ensureAuth)),gotoContol.getpitchesById);
-router.delete('/deletepitch/:id',((jhelper.verifyJwtToken)|| (jhelper.ensureAuth)),gotoContol.delete);
-router.get('/getbyemail',((jhelper.verifyJwtToken)|| (jhelper.ensureAuth)),gotoContol.getByEmail);
+router.post('/addpitch',jhelper.verifyJwtToken,gotoContol.addpitch);
+//router.get('/getallpitches',jhelper.verifyJwtToken,gotoContol.getallpitches);
+router.get('/getallpitches',ghelper.isAuth,gotoContol.getallpitches);
+router.get('/getpitchbyid/:id',ghelper.isAuth,gotoContol.getpitchesById);
+//router.get('/getpitchbyid/:id',(jhelper.verifyJwtToken)gotoContol.getpitchesById);
+router.delete('/deletepitch/:id',gotoContol.delete);
+router.get('/getbyemail',gotoContol.getByEmail);
 
 /*router.get('/google',gotoContol.googleauth);
 router.get('/google/callback',gotoContol.sendtopage);*/

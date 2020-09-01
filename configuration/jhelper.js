@@ -1,5 +1,6 @@
 const jwt= require('jsonwebtoken');
 
+
 module.exports.verifyJwtToken = (req,res,next)=>{
     var token;
     if('authorization' in req.headers)
@@ -33,13 +34,4 @@ module.exports.verifyJwtToken = (req,res,next)=>{
 //     }
 // }
 
-module.exports.ensureAuth=(req,res,next)=>{
-    if(req.isAuthenticated()){
-        return next()
-    }
-    else{
-        console.log("Invalid token")
-        return res.send("Invalid accesss")
-    }
-    }
 
